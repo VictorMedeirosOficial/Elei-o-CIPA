@@ -1,9 +1,9 @@
 /* Lógica da Votação CIPA 2026/2027 — Policlínica de Sobral */
 
 // =========================================================================
-// 1. COLE AQUI A URL DO SEU GOOGLE APPS SCRIPT (deixe '' para teste local)
+// 1. URL DO SEU GOOGLE APPS SCRIPT
 // =========================================================================
-const APPS_SCRIPT_URL = '';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwYVU6P7jkjvDHZcphpW-i31ErL8i2qYOfh07slztFxz9AwDQVD7x-iXW2badoANLmCig/exec';
 
 // Dados das 5 chapas conforme arte oficial
 const CHAPAS = [
