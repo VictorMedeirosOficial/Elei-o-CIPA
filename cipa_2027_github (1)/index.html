@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Votação CIPA 2026/2027 — Policlínica de Sobral</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="min-h-screen flex flex-col bg-gradient-to-b from-emerald-50 via-green-50/40 to-slate-50">
+
+  <!-- Barra Superior com as Logos Oficiais da Arte -->
+  <div class="bg-white border-b border-emerald-200 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-4 sm:gap-6 flex-wrap">
+        <img src="assets/logo_policlinica.png" alt="CPSMS — Policlínica Bernardo Félix da Silva" class="h-14 sm:h-16 w-auto object-contain" />
+        <div class="hidden sm:block h-12 w-px bg-emerald-700/30"></div>
+        <img src="assets/logo_cipa.png" alt="CIPA — Comissão Interna de Prevenção de Acidentes e de Assédio • Gestão 2026/2027" class="h-14 sm:h-16 w-auto object-contain" />
+      </div>
+
+      <!-- Navegação e Controle de Som -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <button id="btnToggleSound" type="button" class="px-3 py-2 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center gap-1.5 transition" title="Ativar ou silenciar som de bipe">
+          <svg id="iconSoundOn" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+          </svg>
+          <span id="soundLabel">Som: ON</span>
+        </button>
+
+        <nav class="flex items-center bg-emerald-50 p-1 rounded-xl border border-emerald-200" aria-label="Abas da interface">
+          <button id="tabBtnVotacao" type="button" class="px-4 py-2 rounded-lg text-sm font-bold bg-emerald-700 text-white shadow-sm transition">
+            Votação
+          </button>
+          <button id="tabBtnResultados" type="button" class="px-4 py-2 rounded-lg text-sm font-semibold text-emerald-800 hover:bg-emerald-100 transition">
+            Apuração (<span id="headerVoteCount">0</span>)
+          </button>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Faixa Título Institucional -->
+  <header class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-green-700 text-white shadow-md border-b-4 border-amber-400">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <div>
+        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">
+          Eleição CIPA — Gestão 2026/2027
+        </h1>
+        <p class="text-xs sm:text-sm text-emerald-100 font-medium">
+          Sua participação fortalece um ambiente de trabalho mais seguro, saudável e respeitoso.
+        </p>
+      </div>
+      <span class="inline-flex items-center gap-1.5 self-start sm:self-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-950/50 text-amber-300 border border-amber-300/40">
+        <span class="w-2 h-2 rounded-full bg-amber-300 animate-pulse"></span>
+        1 Voto por Funcionário
+      </span>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+    <!-- ABA 1: INTERFACE DE VOTAÇÃO -->
+    <section id="viewVotacao" class="animate-in">
+      <form id="votingForm" class="space-y-6" novalidate>
+        <!-- Bloco 1: Identificação do Eleitor -->
+        <div class="bg-white rounded-2xl shadow-sm border border-emerald-100 overflow-hidden">
+          <div class="bg-emerald-50/90 px-5 py-3.5 border-b border-emerald-100 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-full bg-emerald-700 text-white text-xs font-bold flex items-center justify-center">1</span>
+              <h2 class="text-sm sm:text-base font-bold text-emerald-950">Identificação do Colaborador</h2>
+            </div>
+            <span class="text-xs font-medium text-emerald-700">* Campos obrigatórios</span>
+          </div>
+
+          <div class="p-5 sm:p-6 space-y-4">
+            <div>
+              <label for="nomeCompleto" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                Nome completo <span class="text-rose-600">*</span>
+              </label>
+              <input
+                type="text"
+                id="nomeCompleto"
+                name="nomeCompleto"
+                required
+                autocomplete="name"
+                placeholder="Digite seu nome completo"
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition text-sm sm:text-base"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="setor" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                  Setor <span class="text-rose-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="setor"
+                  name="setor"
+                  list="listaSetores"
+                  required
+                  placeholder="Ex.: Enfermagem, Recepção, Ouvidoria..."
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition text-sm sm:text-base"
+                />
+                <datalist id="listaSetores">
+                  <option value="Administração"></option>
+                  <option value="Ambulatório"></option>
+                  <option value="Enfermagem"></option>
+                  <option value="Exames e Diagnóstico por Imagem"></option>
+                  <option value="Farmácia"></option>
+                  <option value="Fisioterapia / Reabilitação"></option>
+                  <option value="Higienização e Serviços Gerais"></option>
+                  <option value="Laboratório"></option>
+                  <option value="Manutenção"></option>
+                  <option value="Núcleo de Educação Permanente"></option>
+                  <option value="Ouvidoria"></option>
+                  <option value="Portaria e Segurança"></option>
+                  <option value="Recepção / SAME"></option>
+                  <option value="Tecnologia da Informação (TI)"></option>
+                </datalist>
+              </div>
+
+              <div>
+                <label for="funcao" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                  Função <span class="text-rose-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="funcao"
+                  name="funcao"
+                  required
+                  placeholder="Ex.: Enfermeiro(a), Técnico(a), Auxiliar..."
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition text-sm sm:text-base"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 2: Candidatos e Escolha da Chapa (1 a 5) -->
+        <div class="bg-white rounded-2xl shadow-sm border border-emerald-100 overflow-hidden">
+          <div class="bg-emerald-50/90 px-5 py-3.5 border-b border-emerald-100 flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-full bg-emerald-700 text-white text-xs font-bold flex items-center justify-center">2</span>
+              <h2 class="text-sm sm:text-base font-bold text-emerald-950">Escolha o(a) candidato(a) / Chapa para votar</h2>
+            </div>
+            <span class="text-xs font-medium text-emerald-700">Selecione 1 opção</span>
+          </div>
+
+          <div class="p-5 sm:p-6">
+            <div id="chapasContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
+
+            <div id="formError" class="hidden mt-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-medium flex items-center gap-2.5">
+              <svg class="w-5 h-5 text-rose-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span id="formErrorText">Preencha todos os campos obrigatórios.</span>
+            </div>
+
+            <div class="mt-6 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <p class="text-xs text-slate-500 text-center sm:text-left">
+                Limitado a 1 voto por funcionário. Confira seus dados antes de confirmar.
+              </p>
+              <button
+                type="submit"
+                class="w-full sm:w-auto px-8 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white font-bold text-sm sm:text-base shadow-md shadow-emerald-700/20 transition flex items-center justify-center gap-2"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+                Confirmar Voto
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- TELA DE COMPROVANTE (PÓS-VOTO) -->
+    <section id="viewComprovante" class="hidden animate-in">
+      <div class="bg-white rounded-2xl shadow-md border border-emerald-200 p-6 sm:p-8 text-center max-w-xl mx-auto">
+        <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-4">
+          <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <span class="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider mb-2">
+          Voto Registrado
+        </span>
+        <h2 class="text-2xl font-extrabold text-emerald-950">Voto confirmado com sucesso!</h2>
+        <p class="text-sm text-slate-600 mt-1">
+          Obrigado por participar da eleição da CIPA Gestão 2026/2027 da Policlínica de Sobral.
+        </p>
+
+        <div class="mt-6 bg-emerald-50/70 border border-emerald-200 rounded-xl p-4 text-left space-y-2 text-sm">
+          <div class="flex justify-between gap-2 border-b border-emerald-200/60 pb-2">
+            <span class="text-slate-500 font-medium">Eleitor(a):</span>
+            <span id="recNome" class="font-bold text-slate-900 text-right"></span>
+          </div>
+          <div class="flex justify-between gap-2 border-b border-emerald-200/60 pb-2">
+            <span class="text-slate-500 font-medium">Setor:</span>
+            <span id="recSetor" class="font-semibold text-slate-800 text-right"></span>
+          </div>
+          <div class="flex justify-between gap-2 border-b border-emerald-200/60 pb-2">
+            <span class="text-slate-500 font-medium">Função:</span>
+            <span id="recFuncao" class="font-semibold text-slate-800 text-right"></span>
+          </div>
+          <div class="flex justify-between gap-2 border-b border-emerald-200/60 pb-2">
+            <span class="text-slate-500 font-medium">Chapa / Candidato(a):</span>
+            <span id="recChapa" class="font-bold text-emerald-700 text-right"></span>
+          </div>
+          <div class="flex justify-between gap-2 pt-0.5">
+            <span class="text-slate-500 font-medium">Protocolo / Data:</span>
+            <span id="recProtocolo" class="font-mono text-xs text-slate-700 text-right"></span>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+          <button id="btnNovoVoto" type="button" class="px-6 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-sm transition">
+            Registrar Novo Voto
+          </button>
+          <button id="btnVerApuracao" type="button" class="px-6 py-2.5 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 text-emerald-800 font-semibold text-sm transition">
+            Ver Apuração
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 2: APURAÇÃO / PRÉVIA DOS RESULTADOS -->
+    <section id="viewResultados" class="hidden animate-in space-y-6">
+      <div class="bg-white rounded-2xl shadow-sm border border-emerald-100 p-5 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div>
+            <h2 class="text-lg font-extrabold text-emerald-950">Apuração — CIPA 2026/2027</h2>
+            <p id="syncStatusText" class="text-xs sm:text-sm text-slate-500">
+              Modo local de teste. Configure a URL do Google Apps Script no script.js para apuração centralizada.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="btnAtualizarApuracao" type="button" class="px-3.5 py-2 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-semibold transition">
+              Atualizar
+            </button>
+            <button id="btnExportCsv" type="button" class="px-3.5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs sm:text-sm font-semibold transition">
+              Exportar CSV
+            </button>
+            <button id="btnLimparVotos" type="button" class="px-3.5 py-2 rounded-xl border border-rose-200 text-rose-700 hover:bg-rose-50 text-xs sm:text-sm font-semibold transition">
+              Limpar Teste
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 my-5">
+          <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3.5">
+            <span class="text-xs font-semibold text-emerald-700 uppercase">Total de Votos</span>
+            <p id="statTotalVotos" class="text-2xl font-extrabold text-emerald-950 mt-0.5">0</p>
+          </div>
+          <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3.5">
+            <span class="text-xs font-semibold text-emerald-700 uppercase">Chapas Ativas</span>
+            <p class="text-2xl font-extrabold text-emerald-950 mt-0.5">5</p>
+          </div>
+          <div class="col-span-2 sm:col-span-1 bg-emerald-50 border border-emerald-100 rounded-xl p-3.5">
+            <span class="text-xs font-semibold text-emerald-700 uppercase">Chapa Líder</span>
+            <p id="statLider" class="text-lg font-extrabold text-emerald-950 mt-1 truncate">—</p>
+          </div>
+        </div>
+
+        <div id="resultsBars" class="space-y-3"></div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm border border-emerald-100 overflow-hidden">
+        <div class="px-5 py-3.5 bg-emerald-50/70 border-b border-emerald-100">
+          <h3 class="text-sm font-bold text-emerald-950">Registro de Participantes</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-slate-50 text-slate-600 border-b border-slate-200">
+              <tr>
+                <th class="px-4 py-2.5 font-semibold">Nome Completo</th>
+                <th class="px-4 py-2.5 font-semibold">Setor</th>
+                <th class="px-4 py-2.5 font-semibold">Função</th>
+                <th class="px-4 py-2.5 font-semibold">Chapa / Candidato</th>
+                <th class="px-4 py-2.5 font-semibold">Horário</th>
+              </tr>
+            </thead>
+            <tbody id="votersTableBody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- POP-UP 1: Confirmação antes de registrar -->
+  <div id="confirmModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-emerald-200 overflow-hidden animate-in">
+      <div class="bg-emerald-800 text-white px-5 py-4 flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-emerald-700 flex items-center justify-center">
+          <svg class="w-5 h-5 text-emerald-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="font-bold text-base">Confirmar seu voto?</h3>
+          <p class="text-xs text-emerald-100">Eleição CIPA 2026/2027 — Policlínica de Sobral</p>
+        </div>
+      </div>
+
+      <div class="p-5 space-y-3 text-sm">
+        <p class="text-slate-600">Verifique se as informações estão corretas:</p>
+        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 space-y-1.5">
+          <div><span class="text-slate-500">Nome:</span> <strong id="modNome" class="text-slate-900"></strong></div>
+          <div><span class="text-slate-500">Setor:</span> <strong id="modSetor" class="text-slate-900"></strong></div>
+          <div><span class="text-slate-500">Função:</span> <strong id="modFuncao" class="text-slate-900"></strong></div>
+          <div class="pt-1.5 mt-1.5 border-t border-emerald-200 flex items-center gap-3">
+            <img id="modFoto" src="" alt="Foto do candidato" class="w-11 h-11 rounded-full object-cover border-2 border-emerald-600" />
+            <div>
+              <div class="text-xs text-slate-500">Voto para:</div>
+              <strong id="modChapa" class="text-emerald-800 text-base"></strong>
+            </div>
+          </div>
+        </div>
+        <div id="modalError" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium"></div>
+      </div>
+
+      <div class="px-5 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-2.5">
+        <button id="btnCancelModal" type="button" class="px-4 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 font-semibold text-sm transition">
+          Corrigir
+        </button>
+        <button id="btnConfirmModal" type="button" class="px-5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm shadow-sm transition">
+          Confirmar Voto
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POP-UP 2: Confirmação de Voto Computado (Estilo Urna + Bipe) -->
+  <div id="successModal" class="hidden fixed inset-0 z-50 bg-slate-900/65 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl border-2 border-emerald-500 p-6 text-center animate-in">
+      <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-3">
+        <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <div class="text-xs font-extrabold uppercase tracking-widest text-emerald-700 mb-1">FIM • VOTO COMPUTADO</div>
+      <h3 class="text-xl font-extrabold text-emerald-950">Voto confirmado!</h3>
+      <p id="successModalText" class="text-sm text-slate-600 mt-1.5"></p>
+      <button id="btnCloseSuccessModal" type="button" class="mt-5 w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm transition">
+        Ver Comprovante
+      </button>
+    </div>
+  </div>
+
+  <!-- Rodapé -->
+  <footer class="bg-white border-t border-emerald-100 py-4 mt-8">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+      <span>CPSMS • Policlínica Bernardo Félix da Silva — Sobral/CE</span>
+      <span>CIPA Gestão 2026/2027 • Comissão Eleitoral</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
